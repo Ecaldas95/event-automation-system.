@@ -1,46 +1,36 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2868
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+/**
+ * Función principal que sirve la página web
+ */
+function doGet(e) {
+  var name = e.parameter.name || "Invitado";
+  var cantMax = e.parameter.cant || 1; 
+  
+  var tmp = HtmlService.createTemplateFromFile('index');
+  tmp.name = name;
+  tmp.cantidad = parseInt(cantMax); 
+  
+  return tmp.evaluate()
+    .setTitle("Invitación de Casamiento")
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
 
-\f0\fs24 \cf0 /**\
- * Project: Event Logistics & Automation System\
- * Description: Handles dynamic web app rendering and spreadsheet data integration.\
- */\
-\
-function doGet(e) \{\
-  // Parameters passed via URL (e.g., ?name=GuestName&cant=2)\
-  var name = e.parameter.name || "Invitado";\
-  var cantMax = e.parameter.cant || 1; \
-  \
-  var tmp = HtmlService.createTemplateFromFile('index');\
-  tmp.name = name;\
-  tmp.cantidad = parseInt(cantMax); \
-  \
-  return tmp.evaluate()\
-    .setTitle("Confirmaci\'f3n de Asistencia - Evento")\
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1');\
-\}\
-\
-/**\
- * Saves guest response back to the linked Google Sheet.\
- * Logic: Finds the guest name in Column A and updates confirmation status.\
- */\
-function saveAnswer(name, answer, cantConfirmada) \{\
-  var ss = SpreadsheetApp.getActiveSpreadsheet();\
-  var sheet = ss.getActiveSheet();\
-  var datos = sheet.getDataRange().getValues();\
-  var fechaActual = new Date();\
-  \
-  for (var i = 1; i < datos.length; i++) \{\
-    if (datos[i][0] == name) \{\
-      // Column D: Confirmed Count (4) | E: Response (5) | F: Timestamp (6)\
-      sheet.getRange(i + 1, 4).setValue(cantConfirmada);\
-      sheet.getRange(i + 1, 5).setValue(answer);\
-      sheet.getRange(i + 1, 6).setValue(fechaActual);\
-      return "OK";\
-    \}\
-  \}\
-\}}
+/**
+ * Función que procesa la respuesta y la guarda en la hoja de cálculo
+ */
+function processResponse(name, answer, cantConfirmada) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getActiveSheet();
+  var datos = sheet.getDataRange().getValues();
+  var fechaActual = new Date();
+  
+  // Busca el nombre en la columna A y actualiza la fila correspondiente
+  for (var i = 1; i < datos.length; i++) {
+    if (datos[i][0] == name) {
+      // Columna D (4): Cantidad | Columna E (5): Respuesta | Columna F (6): Fecha
+      sheet.getRange(i + 1, 4).setValue(cantConfirmada);
+      sheet.getRange(i + 1, 5).setValue(answer);
+      sheet.getRange(i + 1, 6).setValue(fechaActual);
+      return "OK";
+    }
+  }
+}
