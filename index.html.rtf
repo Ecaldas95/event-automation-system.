@@ -4,27 +4,25 @@
 <base target="_top">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
+  /* Estilos generales: Se optó por una estética elegante y minimalista teniendo en cuenta la imagen de invitación elegida por el cliente */
   body { font-family: 'Times New Roman', serif; text-align: center; padding: 20px; color: #8B1A1A; background-color: #FDF2EB; margin: 0; }
   .card { border: 2px solid #8B1A1A; margin: 10px; padding: 30px 15px; border-radius: 5px; min-height: 90vh; display: flex; flex-direction: column; justify-content: center; }
-  h2 { font-size: 50px; color: #8B1A1A; margin-bottom: 5px;}
-  .section-title { font-size: 30px; margin-top: 25px; font-weight: bold; }
-  .details { font-size: 25px; color: #000; font-family: Arial; margin: 5px 0; }
+  
+  /* Botones y elementos de interacción */
   .map-btn { display: inline-block; padding: 12px 25px; background: #fff; border: 1px solid #8B1A1A; color: #8B1A1A; text-decoration: none; font-family: Arial; font-size: 18px; border-radius: 25px; font-weight: bold; margin-bottom: 20px; }
-  hr { border: 0; border-top: 1px solid #8B1A1A; width: 60%; margin: 30px auto; }
-  .regalo-section { margin-top: 30px; padding: 15px; border: 1px dashed #8B1A1A; border-radius: 10px; background: rgba(255,255,255,0.5); }
-  .cbu-box { font-family: Arial; font-size: 18px; color: #000; line-height: 1.6; }
   .copy-btn { background: #f0f0f0; border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; font-size: 14px; cursor: pointer; }
-  .pregunta { font-size: 35px; margin: 25px 0; font-weight: bold; color: #000; }
   .main-btn { font-weight: bold; padding: 25px 20px; margin: 10px auto; border-radius: 10px; border: 1px solid #8B1A1A; width: 100%; max-width: 400px; cursor: pointer; display: block; }
   .yes { background: #8B1A1A; color: #FDF2EB; font-size: 35px; }
   .no { background: transparent; color: #8B1A1A; font-size: 25px; }
+  
+  /* Feedback visual para el usuario una vez confirmada la asistencia */
   .confirmacion-status { background: #8B1A1A; color: #FDF2EB; padding: 15px; border-radius: 10px; font-size: 22px; font-style: italic; margin-top: 20px; line-height: 1.2; }
-  .select-style { font-size: 24px; padding: 10px; border-radius: 10px; border: 1px solid #8B1A1A; width: 100px; margin-top: 10px; color: #8B1A1A; }
 </style>
 </head>
 <body>
 <div class="card">
   <h2>Hola <?= name ?></h2>
+  
   <p style="font-size: 26px; font-style: italic; margin-top: 10px; color: #8B1A1A;">
     <? if (cantidad > 1) { ?> ¡Los invitamos a nuestro casamiento! <? } else { ?> ¡Te invitamos a nuestro casamiento! <? } ?>
   </p>
@@ -35,17 +33,11 @@
 
   <hr>
 
-  <div class="section-title">✧ Fiesta ✧</div>
-  <div class="details">Dirección Ejemplo 456 | 19:00 hs</div>
-  <a href="URL_MAPA_AQUI" target="_blank" class="map-btn">📍 VER MAPA</a>
-
   <div class="regalo-section">
-    <p style="font-size: 20px; font-style: italic;">Si desean hacernos un regalo:</p>
+    <p style="font-size: 20px; font-style: italic;">Regalo:</p>
     <div class="cbu-box">
       Alias: <b id="aliasText">ejemplo.alias.boda</b> 
-      <button class="copy-btn" onclick="copyTo('aliasText')">Copiar</button><br>
-      CBU: <b id="cbuText">0000000000000000000000</b> 
-      <button class="copy-btn" onclick="copyTo('cbuText')">Copiar</button>
+      <button class="copy-btn" onclick="copyTo('aliasText')">Copiar</button>
     </div>
   </div>
 
@@ -71,11 +63,14 @@
   </div>
 
   <div style="margin-top: 60px; padding-bottom: 20px;">
-    <b style="font-size: 32px; color: #8B1A1A; font-style: italic;">Nombre & Nombre</b>
+    <b style="font-size: 32px; color: #8B1A1A; font-style: italic;">Nombres de los Novios</b>
   </div>
 </div>
 
 <script>
+  /**
+   * Maneja el copiado al portapapeles de los datos bancarios
+   */
   function copyTo(id) {
     var text = document.getElementById(id).innerText;
     var input = document.createElement("textarea");
@@ -87,17 +82,21 @@
     alert("¡Copiado! ✅");
   }
 
+  /**
+   * Procesa la respuesta del usuario (Confirmación/Rechazo)
+   */
   function handleResponse(respuesta) {
     var cant = document.getElementById('cantSel').value;
     var actionArea = document.getElementById('action-area');
 
-    // Persistencia local para mejorar la experiencia de usuario
+    // PERSISTENCIA: Guardamos la respuesta en LocalStorage para evitar que el usuario vuelva a votar al refrescar la página
     localStorage.setItem('asistencia_' + "<?= name ?>", respuesta);
     localStorage.setItem('cantidad_' + "<?= name ?>", cant);
 
-    // Llamada al backend en Google Apps Script
+    // COMUNICACIÓN CON BACKEND: Se envía la respuesta a Google Apps Script para impactar el Google Sheets
     google.script.run.processResponse("<?= name ?>", respuesta, cant);
 
+    // UX: Reemplazamos los botones por un mensaje de agradecimiento dinámico (singular/plural)
     if (respuesta === 'Si') {
       var msjSi = (cant == 1) ? "¡Genial! Confirmaste tu asistencia. ✨" : "¡Genial! Confirmaron su asistencia para " + cant + " personas. ✨";
       actionArea.innerHTML = '<div class="confirmacion-status">' + msjSi + '</div>';
@@ -107,6 +106,9 @@
     }
   }
 
+  /**
+   * Al cargar la página, se verifica si ya existe una respuesta previa en la memoria del navegador
+   */
   window.onload = function() {
     var asistenciaGuardada = localStorage.getItem('asistencia_' + "<?= name ?>");
     var cantidadGuardada = localStorage.getItem('cantidad_' + "<?= name ?>");
@@ -115,10 +117,11 @@
     if (asistenciaGuardada) {
       var mensajeFinal = "";
       if (asistenciaGuardada === 'Si') {
-        mensajeFinal = (cantidadGuardada == 1) ? "¡Ya confirmaste tu asistencia! ✨" : "¡Ya confirmaron su asistencia para " + cantidadGuardada + " personas! ✨";
+        mensajeFinal = (cantidadGuardada == 1) ? "¡Ya confirmaste tu asistencia! 🥂" : "¡Ya confirmaron su asistencia para " + cantidadGuardada + " personas! 🥂";
       } else {
         mensajeFinal = (cantidadGuardada == 1) ? "Ya avisaste que no podés venir. ✨" : "Ya avisaron que no pueden venir. ✨";
       }
+      // Se bloquean los botones mostrando solo el estado guardado
       actionArea.innerHTML = '<div class="confirmacion-status">' + mensajeFinal + '</div>';
     }
   };
