@@ -1,18 +1,23 @@
 # Event Logistics & Automation System (Google Apps Script & HTML)
 
-### 📋 Project Overview
-Designed and implemented a full-cycle guest management system to automate invitations and real-time RSVPs for a 100+ person event. This solution replaced manual spreadsheets with a centralized, automated database, ensuring data integrity and operational efficiency.
+# Dynamic Wedding Invitation System
 
-### 🛠 Key Features
-* **Automated Workflow:** Built a custom Google Apps Script to handle incoming data from a web-based interface directly into a master Google Sheet.
-* **Dynamic User Interface:** Developed a responsive HTML/CSS frontend that personalizes the experience based on guest-specific parameters.
-* **Real-time Synchronization:** Implemented conditional logic to manage attendance status, guest counts, and timestamps without manual intervention.
-* **Error Reduction:** Eliminated manual data entry risks, ensuring a single source of truth for event logistics and budgeting.
+A full-stack web application designed to manage wedding invitations with personalized URLs, real-time RSVP tracking, and data persistence.
 
-### 💻 Tech Stack
-* **Languages:** JavaScript (Google Apps Script), HTML5, CSS3.
-* **Platform:** Google Workspace Ecosystem.
-* **Concepts:** Relational logic, Web App deployment, DOM manipulation.
+## 🚀 Features
+- **Dynamic Personalization:** Uses URL parameters to display guest names and specific seat quotas.
+- **Real-Time Sync:** Integrated with Google Apps Script to log responses directly into Google Sheets.
+- **Client-Side Persistence:** Implemented `LocalStorage` to prevent duplicate submissions and maintain UI state upon page refresh.
+- **Smart Messaging:** Conditional logic to handle singular/plural grammar based on guest count.
+- **UX Focused:** Includes "Copy to Clipboard" functionality for gift registry data.
 
----
-*Note: Sensitive information such as Spreadsheet IDs, API endpoints, and personal contact details have been removed or replaced with placeholders for security and privacy.*
+## 🛠️ Tech Stack
+- **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
+- **Backend:** Google Apps Script (GAS)
+- **Database:** Google Sheets API
+
+## 📋 How it works
+1. The script parses the `name` and `cant` parameters from the URL.
+2. The user selects the number of attendees and confirms.
+3. JavaScript triggers a background process to the GAS backend.
+4. The response is saved locally to the browser to lock the RSVP form and show a "Thank You" message.
