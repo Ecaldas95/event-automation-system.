@@ -4,72 +4,85 @@
 <base target="_top">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  /* Estilos generales: Se optó por una estética elegante y minimalista teniendo en cuenta la imagen de invitación elegida por el cliente */
+  /* Base Layout Styles */
   body { font-family: 'Times New Roman', serif; text-align: center; padding: 20px; color: #8B1A1A; background-color: #FDF2EB; margin: 0; }
   .card { border: 2px solid #8B1A1A; margin: 10px; padding: 30px 15px; border-radius: 5px; min-height: 90vh; display: flex; flex-direction: column; justify-content: center; }
   
-  /* Botones y elementos de interacción */
+  /* Typography & Components */
+  h2 { font-size: 50px; color: #8B1A1A; margin-bottom: 5px;}
+  .section-title { font-size: 30px; margin-top: 25px; font-weight: bold; }
+  .details { font-size: 25px; color: #000; font-family: Arial; margin: 5px 0; }
   .map-btn { display: inline-block; padding: 12px 25px; background: #fff; border: 1px solid #8B1A1A; color: #8B1A1A; text-decoration: none; font-family: Arial; font-size: 18px; border-radius: 25px; font-weight: bold; margin-bottom: 20px; }
+  hr { border: 0; border-top: 1px solid #8B1A1A; width: 60%; margin: 30px auto; }
+  
+  /* Gift Registry Section */
+  .regalo-section { margin-top: 30px; padding: 15px; border: 1px dashed #8B1A1A; border-radius: 10px; background: rgba(255,255,255,0.5); }
+  .cbu-box { font-family: Arial; font-size: 18px; color: #000; line-height: 1.6; }
   .copy-btn { background: #f0f0f0; border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; font-size: 14px; cursor: pointer; }
+  
+  /* RSVP Form Styling */
   .main-btn { font-weight: bold; padding: 25px 20px; margin: 10px auto; border-radius: 10px; border: 1px solid #8B1A1A; width: 100%; max-width: 400px; cursor: pointer; display: block; }
   .yes { background: #8B1A1A; color: #FDF2EB; font-size: 35px; }
   .no { background: transparent; color: #8B1A1A; font-size: 25px; }
   
-  /* Feedback visual para el usuario una vez confirmada la asistencia */
+  /* RSVP Confirmation State Styling */
   .confirmacion-status { background: #8B1A1A; color: #FDF2EB; padding: 15px; border-radius: 10px; font-size: 22px; font-style: italic; margin-top: 20px; line-height: 1.2; }
+  .select-style { font-size: 24px; padding: 10px; border-radius: 10px; border: 1px solid #8B1A1A; width: 100px; margin-top: 10px; color: #8B1A1A; }
 </style>
 </head>
 <body>
 <div class="card">
-  <h2>Hola <?= name ?></h2>
+  <h2>Hello <?= name ?></h2>
   
   <p style="font-size: 26px; font-style: italic; margin-top: 10px; color: #8B1A1A;">
-    <? if (cantidad > 1) { ?> ¡Los invitamos a nuestro casamiento! <? } else { ?> ¡Te invitamos a nuestro casamiento! <? } ?>
+    <? if (cantidad > 1) { ?> You are invited to our wedding! <? } else { ?> You are invited to our wedding! <? } ?>
   </p>
 
-  <div class="section-title">✧ Ceremonia ✧</div>
-  <div class="details">Dirección Ejemplo 123 | 17:30 hs</div>
-  <a href="URL_MAPA_AQUI" target="_blank" class="map-btn">📍 VER MAPA</a>
+  <div class="section-title">✧ Registry Office ✧</div>
+  <div class="details">Street Address 123 | 17:30 hs</div>
+  <a href="URL_MAPA_AQUI" target="_blank" class="map-btn">📍 VIEW MAP</a>
 
   <hr>
 
   <div class="regalo-section">
-    <p style="font-size: 20px; font-style: italic;">Regalo:</p>
+    <p style="font-size: 20px; font-style: italic;">Gift Registry:</p>
     <div class="cbu-box">
-      Alias: <b id="aliasText">ejemplo.alias.boda</b> 
-      <button class="copy-btn" onclick="copyTo('aliasText')">Copiar</button>
+      Alias: <b id="aliasText">wedding.alias.example</b> 
+      <button class="copy-btn" onclick="copyTo('aliasText')">Copy</button><br>
+      CBU: <b id="cbuText">0000000000000000000000</b> 
+      <button class="copy-btn" onclick="copyTo('cbuText')">Copy</button>
     </div>
   </div>
 
   <div id="action-area">
     <? if (cantidad > 1) { ?>
-      <p class="pregunta">¿Confirman su asistencia?</p>
+      <p style="font-size: 30px; font-weight: bold;">Will you attend?</p>
       <div style="margin-bottom: 20px;">
-        <label style="font-family: Arial; font-size: 20px;">¿Cuántos vendrán?</label><br>
+        <label style="font-family: Arial; font-size: 20px;">Guest count:</label><br>
         <select id="cantSel" class="select-style">
           <? for(var i=1; i <= cantidad; i++) { ?>
             <option value="<?= i ?>"><?= i ?></option>
           <? } ?>
         </select>
       </div>
-      <button class="main-btn yes" onclick="handleResponse('Si')">SÍ, CONFIRMAMOS</button>
-      <button class="main-btn no" onclick="handleResponse('No')">No podemos ir</button>
+      <button class="main-btn yes" onclick="handleResponse('Si')">YES, WE'RE COMING</button>
+      <button class="main-btn no" onclick="handleResponse('No')">We can't make it</button>
     <? } else { ?>
-      <p class="pregunta">¿Confirmás tu asistencia?</p>
+      <p style="font-size: 30px; font-weight: bold;">Will you attend?</p>
       <input type="hidden" id="cantSel" value="1">
-      <button class="main-btn yes" onclick="handleResponse('Si')">SÍ, CONFIRMO</button>
-      <button class="main-btn no" onclick="handleResponse('No')">No podemos ir</button>
+      <button class="main-btn yes" onclick="handleResponse('Si')">YES, I'M COMING</button>
+      <button class="main-btn no" onclick="handleResponse('No')">I can't make it</button>
     <? } ?>
   </div>
 
   <div style="margin-top: 60px; padding-bottom: 20px;">
-    <b style="font-size: 32px; color: #8B1A1A; font-style: italic;">Nombres de los Novios</b>
+    <b style="font-size: 32px; color: #8B1A1A; font-style: italic;">Flor & Santi</b>
   </div>
 </div>
 
 <script>
   /**
-   * Maneja el copiado al portapapeles de los datos bancarios
+   * Clipboard utility to copy text content
    */
   function copyTo(id) {
     var text = document.getElementById(id).innerText;
@@ -79,50 +92,49 @@
     input.select();
     document.execCommand("copy");
     document.body.removeChild(input);
-    alert("¡Copiado! ✅");
+    alert("Copied! ✅");
   }
 
   /**
-   * Procesa la respuesta del usuario (Confirmación/Rechazo)
+   * Handles user RSVP and persistence
    */
   function handleResponse(respuesta) {
     var cant = document.getElementById('cantSel').value;
     var actionArea = document.getElementById('action-area');
 
-    // PERSISTENCIA: Guardamos la respuesta en LocalStorage para evitar que el usuario vuelva a votar al refrescar la página
-    localStorage.setItem('asistencia_' + "<?= name ?>", respuesta);
-    localStorage.setItem('cantidad_' + "<?= name ?>", cant);
+    // LOCAL STORAGE: Prevent duplicate submissions by storing state locally
+    localStorage.setItem('rsvp_status_' + "<?= name ?>", respuesta);
+    localStorage.setItem('rsvp_count_' + "<?= name ?>", cant);
 
-    // COMUNICACIÓN CON BACKEND: Se envía la respuesta a Google Apps Script para impactar el Google Sheets
+    // BACKEND CALL: Sync data with Google Sheets
     google.script.run.processResponse("<?= name ?>", respuesta, cant);
 
-    // UX: Reemplazamos los botones por un mensaje de agradecimiento dinámico (singular/plural)
+    // UX: Update UI with confirmation message
     if (respuesta === 'Si') {
-      var msjSi = (cant == 1) ? "¡Genial! Confirmaste tu asistencia. ✨" : "¡Genial! Confirmaron su asistencia para " + cant + " personas. ✨";
+      var msjSi = (cant == 1) ? "Great! See you there! 🥂" : "Great! See you all there! 🥂";
       actionArea.innerHTML = '<div class="confirmacion-status">' + msjSi + '</div>';
     } else {
-      var msjNo = (cant == 1) ? "¡Qué lástima que no puedas venir! ✨" : "¡Qué lástima que no puedan venir! ✨";
+      var msjNo = (cant == 1) ? "We are sorry you can't come! ✨" : "We are sorry you can't come! ✨";
       actionArea.innerHTML = '<div class="confirmacion-status">' + msjNo + '</div>';
     }
   }
 
   /**
-   * Al cargar la página, se verifica si ya existe una respuesta previa en la memoria del navegador
+   * On Load: Check if RSVP already exists in local memory
    */
   window.onload = function() {
-    var asistenciaGuardada = localStorage.getItem('asistencia_' + "<?= name ?>");
-    var cantidadGuardada = localStorage.getItem('cantidad_' + "<?= name ?>");
+    var savedStatus = localStorage.getItem('rsvp_status_' + "<?= name ?>");
+    var savedCount = localStorage.getItem('rsvp_count_' + "<?= name ?>");
     var actionArea = document.getElementById('action-area');
 
-    if (asistenciaGuardada) {
-      var mensajeFinal = "";
-      if (asistenciaGuardada === 'Si') {
-        mensajeFinal = (cantidadGuardada == 1) ? "¡Ya confirmaste tu asistencia! 🥂" : "¡Ya confirmaron su asistencia para " + cantidadGuardada + " personas! 🥂";
+    if (savedStatus) {
+      var finalMsg = "";
+      if (savedStatus === 'Si') {
+        finalMsg = (savedCount == 1) ? "Your attendance is confirmed! 🥂" : "Attendance confirmed for " + savedCount + " guests! 🥂";
       } else {
-        mensajeFinal = (cantidadGuardada == 1) ? "Ya avisaste que no podés venir. ✨" : "Ya avisaron que no pueden venir. ✨";
+        finalMsg = (savedCount == 1) ? "You already told us you can't make it. ✨" : "You already told us you can't make it. ✨";
       }
-      // Se bloquean los botones mostrando solo el estado guardado
-      actionArea.innerHTML = '<div class="confirmacion-status">' + mensajeFinal + '</div>';
+      actionArea.innerHTML = '<div class="confirmacion-status">' + finalMsg + '</div>';
     }
   };
 </script>
